@@ -69,13 +69,14 @@ program
   .action(async (url: string, opts: Record<string, unknown>) => {
     try {
       // Validate URL
+      let parsed: URL;
       try {
-        const parsed = new URL(url);
-        if (!['http:', 'https:'].includes(parsed.protocol)) {
-          fail(`Invalid URL. Only http:// and https:// are supported.`);
-        }
+        parsed = new URL(url);
       } catch {
         fail(`Invalid URL. Example: reqbench https://api.example.com/users`);
+      }
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        fail(`Invalid URL. Only http:// and https:// are supported.`);
       }
 
       // Validate method
@@ -125,11 +126,12 @@ program
       // Setup abort for Ctrl+C
       const ac = new AbortController();
       let aborted = false;
-      process.on('SIGINT', () => {
+      const sigintHandler = () => {
         if (aborted) process.exit(1);
         aborted = true;
         ac.abort();
-      });
+      };
+      process.on('SIGINT', sigintHandler);
 
       // Run benchmark
       const progressBar = new ProgressBar(!!opts.quiet);
@@ -151,13 +153,17 @@ program
       // JSON export
       if (opts.output) {
         const json = formatJsonExport(config, stats);
-        fs.writeFileSync(opts.output as string, json + '\n');
+        try {
+          fs.writeFileSync(opts.output as string, json + '\n');
+        } catch {
+          fail(`Cannot write to "${opts.output}". Check the path and permissions.`);
+        }
         process.stderr.write(`  Exported to ${opts.output}\n\n`);
       }
+
+      process.removeListener('SIGINT', sigintHandler);
+      process.exit(0);
     } catch (err) {
-      if (err instanceof Error && err.message.includes('Invalid duration')) {
-        fail(err.message);
-      }
       fail(err instanceof Error ? err.message : String(err));
     }
   });
