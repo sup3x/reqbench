@@ -2,12 +2,27 @@
   "name": "reqbench",
   "version": "1.0.0",
   "description": "Simple, beautiful API load testing from the terminal",
-  "keywords": ["benchmark", "load-test", "http", "api", "performance", "cli", "latency"],
+  "keywords": [
+    "benchmark",
+    "load-test",
+    "http",
+    "api",
+    "performance",
+    "cli",
+    "latency"
+  ],
   "author": "Kerim Gulen",
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/sup3x/reqbench" },
-  "bin": { "reqbench": "./dist/index.js" },
-  "files": ["dist"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sup3x/reqbench"
+  },
+  "bin": {
+    "reqbench": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "scripts": {
     "build": "tsup",
@@ -17,11 +32,13 @@
     "lint": "tsc --noEmit",
     "prepublishOnly": "npm run test:run && npm run build"
   },
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
-    "undici": "^7.0.0"
+    "undici": "^6.24.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
