@@ -13,9 +13,11 @@ export function renderSummary(stats: BenchmarkStats, url: string): string {
   lines.push(DIVIDER);
   lines.push('');
   lines.push(`  Total Requests    ${formatNumber(stats.totalRequests)}`);
-  lines.push(`  Succeeded         ${success(String(stats.succeeded))}          ${dim(`(${formatPercent((stats.succeeded / stats.totalRequests) * 100)})`)}`);
+  const successPct = stats.totalRequests > 0 ? (stats.succeeded / stats.totalRequests) * 100 : 0;
+  lines.push(`  Succeeded         ${success(String(stats.succeeded))}          ${dim(`(${formatPercent(successPct)})`)}`);
   if (stats.failed > 0) {
-    lines.push(`  Failed            ${error(String(stats.failed))}          ${dim(`(${formatPercent((stats.failed / stats.totalRequests) * 100)})`)}`);
+    const failPct = stats.totalRequests > 0 ? (stats.failed / stats.totalRequests) * 100 : 0;
+    lines.push(`  Failed            ${error(String(stats.failed))}          ${dim(`(${formatPercent(failPct)})`)}`);
   }
   lines.push(`  Total Time        ${formatMs(stats.totalTimeMs)}`);
   lines.push(`  Requests/sec      ${bold(formatNumber(stats.requestsPerSec))}`);

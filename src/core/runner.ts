@@ -57,6 +57,7 @@ export async function runBenchmark(
   // Semaphore: when one completes, start another
   while (inFlight.size > 0) {
     await Promise.race(inFlight);
+    if (signal?.aborted) break;
     while (inFlight.size < effectiveConcurrency && shouldContinue()) {
       startRequest();
     }
